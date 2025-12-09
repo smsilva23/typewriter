@@ -15,7 +15,17 @@ let projectRoot = process.cwd();
 if (projectRoot.endsWith('/src') || projectRoot.endsWith('\\src')) {
   projectRoot = resolve(projectRoot, '..');
 }
-const distPath = resolve(projectRoot, 'dist');
+
+// Try multiple possible locations for dist
+let distPath = resolve(projectRoot, 'dist');
+if (!existsSync(distPath)) {
+  // Try parent directory (in case we're nested deeper)
+  const parentDist = resolve(projectRoot, '..', 'dist');
+  if (existsSync(parentDist)) {
+    distPath = parentDist;
+    projectRoot = resolve(projectRoot, '..');
+  }
+}
 
 const indexPath = join(distPath, 'index.html');
 
