@@ -2,16 +2,24 @@
   "name": "typewriter-visualization",
   "version": "1.0.0",
   "description": "Interactive typewriter visualization for keystroke metrics",
-  "main": "index.js",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server.js"
   },
-  "keywords": ["react", "typewriter", "keystroke", "visualization"],
+  "keywords": [
+    "react",
+    "typewriter",
+    "keystroke",
+    "visualization"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.22.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -22,4 +30,3 @@
     "vite": "^4.4.0"
   }
 }
-
