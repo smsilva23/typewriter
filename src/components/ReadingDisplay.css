@@ -245,6 +245,9 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 1;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .reset-reading-button:hover {
@@ -255,18 +258,63 @@
   background: radial-gradient(circle at center, #2d1514 0%, #162d2b 50%, #0e221d 100%);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .reading-container {
+    padding: 20px 10px;
+  }
+  
   .reading-card {
-    padding: 25px;
+    padding: 25px 20px;
   }
   
   .archetype-name {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+  }
+  
+  .archetype-description {
+    font-size: 1rem;
+  }
+  
+  .traits-section h3,
+  .reading-section h3 {
+    font-size: 1.6rem;
+  }
+  
+  .reading-text {
+    font-size: 1rem;
+    padding: 15px;
+  }
+  
+  .reset-reading-button {
+    padding: 14px 25px;
+    font-size: 1rem;
+    min-height: 44px; /* iOS touch target minimum */
+  }
+  
+  .trait-badge {
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    min-height: 44px; /* iOS touch target */
+  }
+}
+
+@media (max-width: 600px) {
+  .reading-card {
+    padding: 20px 15px;
+  }
+  
+  .archetype-name {
+    font-size: 1.8rem;
   }
   
   .metrics-summary {
     flex-direction: column;
     gap: 15px;
+  }
+  
+  .traits-section h3,
+  .reading-section h3 {
+    font-size: 1.4rem;
   }
 }
 

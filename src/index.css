@@ -54,3 +54,13 @@ body::before {
   z-index: 1;
 }
 
+@media (max-width: 768px) {
+  body {
+    padding: 10px 5px;
+  }
+  
+  #root {
+    max-width: 100%;
+  }
+}
+

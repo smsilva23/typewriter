@@ -117,6 +117,9 @@
   box-shadow: inset 0 0 10px rgba(139, 90, 43, 0.1);
   position: relative;
   z-index: 1;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .organic-typing-container.scripted-phase .organic-textarea {
@@ -256,6 +259,9 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 1;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .submit-button:hover:not(:disabled) {
@@ -271,6 +277,47 @@
   cursor: not-allowed;
 }
 
+@media (max-width: 768px) {
+  .organic-typing-container {
+    padding: 20px 10px;
+  }
+  
+  .typing-prompt h2 {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+  
+  .scripted-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .typing-area {
+    padding: 20px;
+  }
+  
+  .organic-textarea {
+    font-size: 1rem;
+    padding: 15px;
+    min-height: 200px;
+  }
+  
+  .scripted-target {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+  
+  .submit-button {
+    padding: 14px 25px;
+    font-size: 0.95rem;
+    min-height: 44px; /* iOS touch target minimum */
+  }
+  
+  .typing-footer {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
 @media (max-width: 600px) {
   .typing-footer {
     flex-direction: column;
@@ -279,6 +326,19 @@
   
   .submit-button {
     width: 100%;
+    min-height: 44px;
+  }
+  
+  .organic-typing-container {
+    padding: 15px 8px;
+  }
+  
+  .typing-prompt h2 {
+    font-size: 1.6rem;
+  }
+  
+  .scripted-title {
+    font-size: 1.3rem !important;
   }
 }
 
