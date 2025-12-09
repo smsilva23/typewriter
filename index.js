@@ -2,7 +2,7 @@
 // This allows Render to use either "node index.js" or "npm start"
 import express from 'express';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,13 +11,20 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-const distPath = join(__dirname, 'dist');
+// Find dist folder - Vite builds to project root
+// Use process.cwd() to get the project root directory
+const projectRoot = process.cwd();
+const distPath = resolve(projectRoot, 'dist');
+
 const indexPath = join(distPath, 'index.html');
 
 // Check if dist folder exists
 if (!existsSync(distPath)) {
   console.error(`ERROR: dist folder not found at ${distPath}`);
+  console.error(`Project root: ${projectRoot}`);
+  console.error(`__dirname: ${__dirname}`);
   console.error('Make sure "npm run build" completed successfully');
+  console.error('Contents of project root:', existsSync(projectRoot) ? readdirSync(projectRoot) : 'project root does not exist');
   process.exit(1);
 }
 
