@@ -10,8 +10,11 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Find dist folder - Vite builds to project root
-// Use process.cwd() to get the project root directory
-const projectRoot = process.cwd();
+// Render runs from src/, so we need to go up one level if we're in src
+let projectRoot = process.cwd();
+if (projectRoot.endsWith('/src') || projectRoot.endsWith('\\src')) {
+  projectRoot = resolve(projectRoot, '..');
+}
 const distPath = resolve(projectRoot, 'dist');
 
 const indexPath = join(distPath, 'index.html');
