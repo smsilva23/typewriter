@@ -12,23 +12,40 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Find dist folder - Vite builds to project root
-// Render runs from src/, so we need to go up one level if we're in src
+// Find project root by looking for package.json
+// Render might have files in different locations
 let projectRoot = process.cwd();
-if (projectRoot.endsWith('/src') || projectRoot.endsWith('\\src')) {
-  projectRoot = resolve(projectRoot, '..');
-}
+let distPath;
 
-// Try multiple possible locations for dist
-let distPath = resolve(projectRoot, 'dist');
-if (!existsSync(distPath)) {
-  // Try parent directory (in case we're nested deeper)
-  const parentDist = resolve(projectRoot, '..', 'dist');
-  if (existsSync(parentDist)) {
-    distPath = parentDist;
-    projectRoot = resolve(projectRoot, '..');
+// Try to find package.json to determine project root
+const possibleRoots = [
+  projectRoot,
+  resolve(projectRoot, '..'),
+  resolve(projectRoot, '../..'),
+  join(projectRoot, 'src'),
+  resolve(projectRoot, '..', 'src')
+];
+
+let foundRoot = null;
+for (const root of possibleRoots) {
+  if (existsSync(join(root, 'package.json'))) {
+    foundRoot = root;
+    break;
   }
 }
+
+if (foundRoot) {
+  projectRoot = foundRoot;
+  distPath = resolve(projectRoot, 'dist');
+} else {
+  // Fallback: use current directory structure
+  if (projectRoot.endsWith('/src') || projectRoot.endsWith('\\src')) {
+    projectRoot = resolve(projectRoot, '..');
+  }
+  distPath = resolve(projectRoot, 'dist');
+}
+
+const packageJsonPath = join(projectRoot, 'package.json');
 
 const indexPath = join(distPath, 'index.html');
 
@@ -37,6 +54,19 @@ if (!existsSync(distPath)) {
   console.warn(`WARNING: dist folder not found at ${distPath}`);
   console.warn(`Project root: ${projectRoot}`);
   console.warn(`__dirname: ${__dirname}`);
+  console.warn(`Current working directory: ${process.cwd()}`);
+  
+  // Verify package.json exists before building
+  if (!existsSync(packageJsonPath)) {
+    console.error(`ERROR: package.json not found at ${packageJsonPath}`);
+    console.error('Searched in:', possibleRoots);
+    console.error('Contents of current dir:', existsSync(process.cwd()) ? readdirSync(process.cwd()) : 'does not exist');
+    if (existsSync(projectRoot)) {
+      console.error('Contents of project root:', readdirSync(projectRoot));
+    }
+    process.exit(1);
+  }
+  
   console.warn('Attempting to build...');
   
   // Try to build
