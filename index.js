@@ -4,6 +4,7 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
 import { readFileSync, existsSync, readdirSync } from 'fs';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,14 +32,30 @@ if (!existsSync(distPath)) {
 
 const indexPath = join(distPath, 'index.html');
 
-// Check if dist folder exists
+// Check if dist folder exists - if not, try to build it
 if (!existsSync(distPath)) {
-  console.error(`ERROR: dist folder not found at ${distPath}`);
-  console.error(`Project root: ${projectRoot}`);
-  console.error(`__dirname: ${__dirname}`);
-  console.error('Make sure "npm run build" completed successfully');
-  console.error('Contents of project root:', existsSync(projectRoot) ? readdirSync(projectRoot) : 'project root does not exist');
-  process.exit(1);
+  console.warn(`WARNING: dist folder not found at ${distPath}`);
+  console.warn(`Project root: ${projectRoot}`);
+  console.warn(`__dirname: ${__dirname}`);
+  console.warn('Attempting to build...');
+  
+  // Try to build
+  try {
+    process.chdir(projectRoot);
+    execSync('npm run build', { stdio: 'inherit', cwd: projectRoot });
+    
+    // Check again
+    if (!existsSync(distPath)) {
+      console.error('Build completed but dist folder still not found');
+      console.error('Contents of project root:', existsSync(projectRoot) ? readdirSync(projectRoot) : 'project root does not exist');
+      process.exit(1);
+    }
+    console.log('✓ Build completed successfully');
+  } catch (error) {
+    console.error('Build failed:', error.message);
+    console.error('Contents of project root:', existsSync(projectRoot) ? readdirSync(projectRoot) : 'project root does not exist');
+    process.exit(1);
+  }
 }
 
 // Check if index.html exists

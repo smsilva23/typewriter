@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node -e \"import('fs').then(fs => { if (!fs.existsSync('dist')) { console.error('ERROR: dist folder not created!'); process.exit(1); } else { console.log('✓ dist folder created successfully'); } })\"",
+    "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js"
   },
