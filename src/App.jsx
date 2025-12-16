@@ -42,15 +42,15 @@ function App() {
     // Check for "skip" command BEFORE any other processing
     if (!isBackspace) {
       const typedChar = key.toLowerCase()
-      typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-4)
-      const lastFour = typedSequenceRef.current.toLowerCase()
+      // Track ALL characters (letters, numbers, etc.) for skip sequence
+      typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-20)
+      const sequence = typedSequenceRef.current.toLowerCase()
       
-      if (lastFour === 'skip') {
+      // Check if sequence ends with "skip" (trigger as soon as "p" completes "skip")
+      if (sequence.endsWith('skip')) {
         // Skip detected - prevent default, stop propagation, and transition
         event.preventDefault()
         event.stopPropagation()
-        setPhase('typing')
-        setIsMessageComplete(false)
         typedSequenceRef.current = ''
         lastKeystrokeTimeRef.current = Date.now()
         // Clear input if it exists
@@ -58,6 +58,9 @@ function App() {
           inputRef.current.value = ''
           inputRef.current.dataset.previousLength = '0'
         }
+        // Transition immediately
+        setPhase('typing')
+        setIsMessageComplete(false)
         return
       }
     }
@@ -233,7 +236,7 @@ function App() {
     if (value.length > 0) {
       // Process each character in the value (in case multiple were added)
       const currentLength = value.length
-      const previousLength = inputRef.current?.dataset.previousLength || 0
+      const previousLength = parseInt(inputRef.current?.dataset.previousLength || '0', 10)
       
       if (currentLength > previousLength) {
         // New characters were added
@@ -248,8 +251,26 @@ function App() {
             continue
           }
           
+          // Track skip sequence directly here too
+          const typedChar = char.toLowerCase()
+          typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-20)
+          const sequence = typedSequenceRef.current.toLowerCase()
+          
+          // Check for skip BEFORE calling handleKeyPress
+          if (sequence.endsWith('skip')) {
+            typedSequenceRef.current = ''
+            lastKeystrokeTimeRef.current = Date.now()
+            e.target.value = ''
+            if (inputRef.current) {
+              inputRef.current.dataset.previousLength = '0'
+            }
+            setPhase('typing')
+            setIsMessageComplete(false)
+            return
+          }
+          
           // Create a synthetic keydown event for the character
-          // handleKeyPress will handle skip detection
+          // handleKeyPress will also handle skip detection as backup
           const syntheticEvent = {
             key: char,
             preventDefault: () => {},
@@ -257,21 +278,28 @@ function App() {
           }
           
           handleKeyPress(syntheticEvent)
+          
+          // If phase changed (skip detected), break out
+          if (phase !== 'reveal') {
+            break
+          }
         }
       }
       
       // Store current length for next comparison
-      if (inputRef.current) {
-        inputRef.current.dataset.previousLength = currentLength
+      if (inputRef.current && phase === 'reveal') {
+        inputRef.current.dataset.previousLength = currentLength.toString()
       }
       
-      // Clear the input to track next character
-      e.target.value = ''
-      if (inputRef.current) {
-        inputRef.current.dataset.previousLength = '0'
+      // Clear the input to track next character (only if still in reveal phase)
+      if (phase === 'reveal') {
+        e.target.value = ''
+        if (inputRef.current) {
+          inputRef.current.dataset.previousLength = '0'
+        }
       }
     }
-  }, [phase, handleKeyPress])
+  }, [phase, handleKeyPress, setPhase, setIsMessageComplete])
 
   return (
     <div className="app">

@@ -1,5 +1,14 @@
 .app {
   width: 100%;
+  background: transparent;
+  min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .app {
+    min-height: 100%;
+    background: transparent;
+  }
 }
 
 .app-header {
@@ -74,26 +83,6 @@
   padding: 0;
   margin: 0;
   z-index: -1;
-}
-
-/* On mobile, make it visible but transparent so keyboard can open */
-@media (max-width: 768px) {
-  .hidden-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: calc(100% - 250px); /* Don't cover the bottom area where buttons are */
-    opacity: 0.01;
-    z-index: 1; /* Lower z-index so buttons can be clicked */
-    pointer-events: auto;
-  }
-  
-  /* Ensure buttons are above the input and clickable */
-  .paper-next-button-overlay {
-    z-index: 10001 !important;
-    pointer-events: auto !important;
-  }
 }
 
 @media (max-width: 768px) {

@@ -61,7 +61,40 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
     if (isMobile && inputRef?.current) {
       e.preventDefault()
-      inputRef.current.focus()
+      e.stopPropagation()
+      // Force focus and show keyboard - use setTimeout to ensure it works
+      setTimeout(() => {
+        if (inputRef?.current) {
+          inputRef.current.focus()
+          // Try to show keyboard on iOS
+          inputRef.current.setAttribute('readonly', 'readonly')
+          setTimeout(() => {
+            if (inputRef?.current) {
+              inputRef.current.removeAttribute('readonly')
+            }
+          }, 100)
+        }
+      }, 0)
+    }
+  }
+  
+  const handleKeyboardTouch = (e) => {
+    // Handle touch events on mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+    if (isMobile && inputRef?.current) {
+      e.preventDefault()
+      e.stopPropagation()
+      setTimeout(() => {
+        if (inputRef?.current) {
+          inputRef.current.focus()
+          inputRef.current.setAttribute('readonly', 'readonly')
+          setTimeout(() => {
+            if (inputRef?.current) {
+              inputRef.current.removeAttribute('readonly')
+            }
+          }, 100)
+        }
+      }, 0)
     }
   }
 
@@ -106,7 +139,11 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
       </div>
 
       {/* Keyboard */}
-      <div className="typewriter-keyboard" onClick={handleKeyboardClick}>
+      <div 
+        className="typewriter-keyboard" 
+        onClick={handleKeyboardClick}
+        onTouchStart={handleKeyboardTouch}
+      >
         {/* Number Row */}
         <div className="keyboard-row">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((key) => (

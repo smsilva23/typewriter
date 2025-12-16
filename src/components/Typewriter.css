@@ -638,12 +638,26 @@
 /* Make keyboard clickable on mobile to trigger keyboard */
 @media (max-width: 768px) {
   .typewriter-keyboard {
-    cursor: pointer;
+    cursor: pointer !important;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 10 !important;
+    touch-action: manipulation;
   }
   
   .typewriter-keyboard:active {
     opacity: 0.95;
+    background: rgba(127, 179, 184, 0.9) !important;
+  }
+  
+  /* Make sure keys don't block the click */
+  .typewriter-key {
+    pointer-events: none !important;
+  }
+  
+  .keyboard-row {
+    pointer-events: none !important;
   }
 }
 
