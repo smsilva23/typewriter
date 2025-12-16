@@ -64,17 +64,13 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     if (isMobile && inputRef?.current) {
       e.preventDefault()
       e.stopPropagation()
-      // Simple focus - should trigger keyboard
-      inputRef.current.focus()
-      // Add visual feedback
-      if (keyboardRef.current) {
-        keyboardRef.current.classList.add('touching')
-        setTimeout(() => {
-          if (keyboardRef.current) {
-            keyboardRef.current.classList.remove('touching')
-          }
-        }, 150)
-      }
+      // Force focus to trigger keyboard
+      setTimeout(() => {
+        if (inputRef?.current) {
+          inputRef.current.focus()
+          inputRef.current.click()
+        }
+      }, 10)
     }
   }
   
@@ -84,10 +80,6 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     if (isMobile && inputRef?.current) {
       e.preventDefault()
       e.stopPropagation()
-      // Add visual feedback
-      if (keyboardRef.current) {
-        keyboardRef.current.classList.add('touching')
-      }
     }
   }
   
@@ -96,11 +88,12 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     if (isMobile && inputRef?.current) {
       e.preventDefault()
       e.stopPropagation()
-      inputRef.current.focus()
-      // Remove visual feedback
-      if (keyboardRef.current) {
-        keyboardRef.current.classList.remove('touching')
-      }
+      setTimeout(() => {
+        if (inputRef?.current) {
+          inputRef.current.focus()
+          inputRef.current.click()
+        }
+      }, 10)
     }
   }
 

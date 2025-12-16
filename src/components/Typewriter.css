@@ -648,7 +648,7 @@
   .typewriter-keyboard {
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3);
-    pointer-events: auto;
+    pointer-events: auto !important;
     position: relative;
     z-index: 10;
     touch-action: manipulation;
@@ -656,22 +656,19 @@
     -webkit-user-select: none;
   }
   
-  .typewriter-keyboard:active,
-  .typewriter-keyboard:focus {
+  .typewriter-keyboard:active {
     opacity: 0.9;
-    transform: scale(0.98);
-    transition: transform 0.1s, opacity 0.1s;
   }
   
   /* Make sure keys don't block the click */
   .typewriter-key {
-    pointer-events: none;
+    pointer-events: none !important;
     user-select: none;
     -webkit-user-select: none;
   }
   
   .keyboard-row {
-    pointer-events: none;
+    pointer-events: none !important;
   }
   
   /* Add visual feedback on touch */

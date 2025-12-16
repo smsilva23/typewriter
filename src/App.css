@@ -95,7 +95,7 @@
     width: 100%;
     height: 44px;
     opacity: 0.01;
-    z-index: 9998;
+    z-index: 1;
     pointer-events: auto;
     caret-color: #f4e8d8;
     color: #f4e8d8;
@@ -103,9 +103,10 @@
     padding: 0 10px;
   }
   
-  /* Ensure keyboard area is above input */
+  /* Ensure keyboard area is above input and clickable */
   .typewriter-keyboard {
-    z-index: 9999 !important;
+    z-index: 10;
+    position: relative;
   }
 }
 
