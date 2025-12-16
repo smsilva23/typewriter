@@ -83,10 +83,16 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 250px); /* Don't cover the bottom area where buttons are */
     opacity: 0.01;
-    z-index: 9999;
+    z-index: 1; /* Lower z-index so buttons can be clicked */
     pointer-events: auto;
+  }
+  
+  /* Ensure buttons are above the input and clickable */
+  .paper-next-button-overlay {
+    z-index: 10001 !important;
+    pointer-events: auto !important;
   }
 }
 

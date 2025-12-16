@@ -231,6 +231,23 @@ function App() {
         for (let i = 0; i < newChars.length; i++) {
           const char = newChars[i]
           
+          // Update skip sequence tracking BEFORE creating synthetic event
+          typedSequenceRef.current = (typedSequenceRef.current + char.toLowerCase()).slice(-4)
+          const lastFour = typedSequenceRef.current.toLowerCase()
+          
+          // Check for skip command
+          if (lastFour === 'skip') {
+            setPhase('typing')
+            setIsMessageComplete(false)
+            typedSequenceRef.current = ''
+            lastKeystrokeTimeRef.current = Date.now()
+            e.target.value = ''
+            if (inputRef.current) {
+              inputRef.current.dataset.previousLength = '0'
+            }
+            return
+          }
+          
           // Create a synthetic keydown event for the character
           const syntheticEvent = {
             key: char,
