@@ -18,12 +18,12 @@ html {
   background-attachment: fixed;
   min-height: 100vh;
   height: 100%;
-  padding-top: 100px;
+  padding-top: 20px;
 }
 
 @media (max-width: 768px) {
   html {
-    padding-top: 80px;
+    padding-top: 10px;
   }
 }
 
