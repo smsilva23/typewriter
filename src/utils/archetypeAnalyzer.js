@@ -98,7 +98,7 @@ export function analyzeTypingPattern(metrics, keystrokes, typos) {
       description: 'Your typing pattern is unpredictable, like bursts of creative energy.'
     }
     traits = ['Creative', 'Unpredictable', 'Spontaneous', 'Innovative']
-    reading = "Your irregular rhythm reveals a creative storm within. You don't follow predictable patterns—you create your own. This suggests someone who thinks outside the box, who values spontaneity, and who brings fresh perspectives to everything they do. Your unpredictability is your superpower."
+    reading = "Your irregular rhythm reveals a creative storm within. You don't follow predictable patterns—you create your own. This suggests someone who thinks outside the box, who values spontaneity, and who brings fresh perspectives to everything they do."
   }
   // Default: "The Thoughtful Wanderer"
   else {
@@ -108,7 +108,7 @@ export function analyzeTypingPattern(metrics, keystrokes, typos) {
       description: 'You move at your own pace, exploring thoughts and ideas as they come.'
     }
     traits = ['Contemplative', 'Curious', 'Adaptable', 'Open-minded']
-    reading = "You are the thoughtful wanderer. Your typing pattern doesn't fit into neat categories, and that's beautiful. You move through ideas at your own pace, exploring and adapting. This suggests someone who is open to new experiences, who doesn't rush to conclusions, and who values the journey as much as the destination."
+    reading = "You are the thoughtful wanderer. Your typing pattern doesn't fit into neat categories, just like you! You move through ideas at your own pace, exploring and adapting. This suggests someone who is open to new experiences, who doesn't rush to conclusions, and who values the journey as much as the destination."
   }
 
   return {
