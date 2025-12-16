@@ -205,10 +205,14 @@ function App() {
   // Auto-focus input on mobile for keyboard events
   useEffect(() => {
     if (phase === 'reveal' && inputRef.current) {
-      // Small delay to ensure the element is rendered
-      setTimeout(() => {
-        inputRef.current?.focus()
-      }, 100)
+      // Only focus on mobile devices
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+      if (isMobile) {
+        // Small delay to ensure the element is rendered
+        setTimeout(() => {
+          inputRef.current?.focus()
+        }, 100)
+      }
     }
   }, [phase])
 

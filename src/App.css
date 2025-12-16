@@ -83,31 +83,6 @@
   padding: 0;
   margin: 0;
   z-index: -1;
-  caret-color: transparent;
-}
-
-/* On mobile, position input at bottom so cursor appears when keyboard opens */
-@media (max-width: 768px) {
-  .hidden-input {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 44px;
-    opacity: 0.01;
-    z-index: 1;
-    pointer-events: auto;
-    caret-color: #f4e8d8;
-    color: #f4e8d8;
-    font-size: 16px; /* Prevents zoom on iOS */
-    padding: 0 10px;
-  }
-  
-  /* Ensure keyboard area is above input and clickable */
-  .typewriter-keyboard {
-    z-index: 10;
-    position: relative;
-  }
 }
 
 @media (max-width: 768px) {

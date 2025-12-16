@@ -56,46 +56,6 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     return lastPressedKey === key.toLowerCase()
   }
 
-  const keyboardRef = React.useRef(null)
-  
-  const handleKeyboardClick = (e) => {
-    // Only focus input on mobile devices
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
-    if (isMobile && inputRef?.current) {
-      e.preventDefault()
-      e.stopPropagation()
-      // Force focus to trigger keyboard
-      setTimeout(() => {
-        if (inputRef?.current) {
-          inputRef.current.focus()
-          inputRef.current.click()
-        }
-      }, 10)
-    }
-  }
-  
-  const handleKeyboardTouchStart = (e) => {
-    // Handle touch events on mobile
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
-    if (isMobile && inputRef?.current) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
-  }
-  
-  const handleKeyboardTouchEnd = (e) => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
-    if (isMobile && inputRef?.current) {
-      e.preventDefault()
-      e.stopPropagation()
-      setTimeout(() => {
-        if (inputRef?.current) {
-          inputRef.current.focus()
-          inputRef.current.click()
-        }
-      }, 10)
-    }
-  }
 
   return (
     <div className="typewriter-container">
@@ -138,13 +98,7 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
       </div>
 
       {/* Keyboard */}
-      <div 
-        ref={keyboardRef}
-        className="typewriter-keyboard" 
-        onClick={handleKeyboardClick}
-        onTouchStart={handleKeyboardTouchStart}
-        onTouchEnd={handleKeyboardTouchEnd}
-      >
+      <div className="typewriter-keyboard">
         {/* Number Row */}
         <div className="keyboard-row">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((key) => (
