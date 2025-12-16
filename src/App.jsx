@@ -199,6 +199,62 @@ function App() {
     return revealedChars.has(lowerChar) || char === ' ' || /[.,!?;:']/.test(char)
   }).length
 
+  const inputRef = useRef(null)
+
+  // Auto-focus input on mobile for keyboard events
+  useEffect(() => {
+    if (phase === 'reveal' && inputRef.current) {
+      // Small delay to ensure the element is rendered
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }, [phase])
+
+  // Handle input changes for mobile
+  const handleInput = useCallback((e) => {
+    if (phase !== 'reveal') {
+      return
+    }
+    
+    const value = e.target.value
+    if (value.length > 0) {
+      // Process each character in the value (in case multiple were added)
+      const currentLength = value.length
+      const previousLength = inputRef.current?.dataset.previousLength || 0
+      
+      if (currentLength > previousLength) {
+        // New characters were added
+        const newChars = value.slice(previousLength)
+        
+        // Process each new character
+        for (let i = 0; i < newChars.length; i++) {
+          const char = newChars[i]
+          
+          // Create a synthetic keydown event for the character
+          const syntheticEvent = {
+            key: char,
+            preventDefault: () => {},
+            stopPropagation: () => {}
+          }
+          
+          handleKeyPress(syntheticEvent)
+        }
+      }
+      
+      // Store current length for next comparison
+      if (inputRef.current) {
+        inputRef.current.dataset.previousLength = currentLength
+      }
+      
+      // Clear the input to track next character
+      e.target.value = ''
+      if (inputRef.current) {
+        inputRef.current.dataset.previousLength = '0'
+      }
+    }
+  }, [phase, handleKeyPress])
+
   return (
     <div className="app">
       {phase === 'reveal' && (
@@ -207,6 +263,20 @@ function App() {
             <h1>Typewriter Tarot Reading</h1>
             <p className="subtitle">Type to reveal the hidden message...</p>
           </div>
+          
+          {/* Hidden input for mobile keyboard support */}
+          <input
+            ref={inputRef}
+            type="text"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+            className="hidden-input"
+            onKeyDown={handleKeyPress}
+            onInput={handleInput}
+            placeholder=""
+          />
           
           <div className="content-container">
             <Typewriter 

@@ -58,6 +58,38 @@
   flex-direction: column;
 }
 
+.hidden-input {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  font-size: 1px;
+  padding: 0;
+  margin: 0;
+  z-index: -1;
+}
+
+/* On mobile, make it visible but transparent so keyboard can open */
+@media (max-width: 768px) {
+  .hidden-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.01;
+    z-index: 9999;
+    pointer-events: auto;
+  }
+}
+
 @media (max-width: 768px) {
   .app-header h1 {
     font-size: 1.8rem;
