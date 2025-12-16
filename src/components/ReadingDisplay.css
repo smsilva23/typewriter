@@ -2,8 +2,9 @@
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 120px 20px 60px 20px !important;
   animation: fadeIn 0.8s ease;
+  position: relative;
 }
 
 @keyframes fadeIn {
@@ -68,6 +69,7 @@
 .archetype-header {
   text-align: center;
   margin-bottom: 40px;
+  padding-top: 50px !important;
   padding-bottom: 30px;
   border-bottom: 2px solid #8c938b;
   position: relative;
@@ -260,7 +262,11 @@
 
 @media (max-width: 768px) {
   .reading-container {
-    padding: 20px 10px;
+    padding: 100px 10px 40px 10px !important;
+  }
+  
+  .archetype-header {
+    padding-top: 30px !important;
   }
   
   .reading-card {

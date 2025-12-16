@@ -11,7 +11,7 @@ export function analyzeTypingPattern(metrics, keystrokes, typos) {
   const FAST_WPM = 60
   const SLOW_WPM = 30
   const HIGH_ACCURACY = 95
-  const LOW_ACCURACY = 80
+  const LOW_ACCURACY = 60
   const LOW_VARIANCE = 150  // Very consistent rhythm
   const HIGH_VARIANCE = 400  // Very inconsistent rhythm
   const HIGH_TYPO_RATE = 20  // More than 20% typos is considered inaccurate

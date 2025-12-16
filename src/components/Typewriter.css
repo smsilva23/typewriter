@@ -6,7 +6,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  max-height: calc(100vh - 120px);
+  padding: 100px 0 40px 0 !important;
   overflow: visible;
   perspective: 1500px;
   transform-style: preserve-3d;
@@ -643,6 +643,23 @@
   }
 }
 
+/* Make keyboard clickable on mobile */
+@media (max-width: 768px) {
+  .typewriter-keyboard {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+    touch-action: manipulation;
+  }
+  
+  .typewriter-key {
+    pointer-events: none;
+  }
+  
+  .keyboard-row {
+    pointer-events: none;
+  }
+}
+
 
 .keyboard-right-controls {
   position: absolute;
@@ -923,8 +940,8 @@
 @media (max-width: 768px) {
   .typewriter-container {
     max-width: 100%;
-    padding: 10px;
-    max-height: calc(100vh - 100px);
+    padding: 80px 10px 30px 10px !important;
+    max-height: none;
   }
   
   .typewriter-machine {

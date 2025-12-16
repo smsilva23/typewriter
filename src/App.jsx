@@ -30,27 +30,37 @@ function App() {
       return
     }
 
-    // Ignore special keys
-    if (event.key.length > 1 && event.key !== 'Backspace') {
+    const key = event.key
+    const isBackspace = key === 'Backspace'
+    
+    // Check for "skip" command FIRST - track ALL single character keys
+    if (!isBackspace && key.length === 1) {
+      const typedChar = key.toLowerCase()
+      typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-4)
+      const lastFour = typedSequenceRef.current.toLowerCase()
+      
+      if (lastFour === 'skip') {
+        // Skip detected - prevent default, stop propagation, and transition
+        event.preventDefault()
+        event.stopPropagation()
+        setPhase('typing')
+        setIsMessageComplete(false)
+        typedSequenceRef.current = ''
+        lastKeystrokeTimeRef.current = Date.now()
+        if (inputRef.current) {
+          inputRef.current.value = ''
+          inputRef.current.dataset.previousLength = '0'
+        }
+        return
+      }
+    }
+
+    // Ignore special keys (after skip check)
+    if (key.length > 1 && !isBackspace) {
       return
     }
 
-    const typedChar = event.key.toLowerCase()
-    
-    // Check for "skip" command BEFORE any other processing
-    typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-4)
-    const lastFour = typedSequenceRef.current.toLowerCase()
-    
-    if (lastFour === 'skip') {
-      // Skip detected - prevent default, stop propagation, and transition
-      event.preventDefault()
-      event.stopPropagation()
-      setPhase('typing')
-      setIsMessageComplete(false)
-      typedSequenceRef.current = ''
-      lastKeystrokeTimeRef.current = Date.now()
-      return
-    }
+    const typedChar = isBackspace ? 'backspace' : key.toLowerCase()
 
     if (!isActive) {
       setIsActive(true)
@@ -224,7 +234,7 @@ function App() {
     
     const value = e.target.value
     if (value.length > 0) {
-      // Process each character in the value (in case multiple were added)
+      // Process each character in the value
       const currentLength = value.length
       const previousLength = parseInt(inputRef.current?.dataset.previousLength || '0', 10)
       
@@ -241,6 +251,24 @@ function App() {
             continue
           }
           
+          // Track skip sequence directly (same as handleKeyPress)
+          const typedChar = char.toLowerCase()
+          typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-4)
+          const lastFour = typedSequenceRef.current.toLowerCase()
+          
+          // Check for skip
+          if (lastFour === 'skip') {
+            typedSequenceRef.current = ''
+            lastKeystrokeTimeRef.current = Date.now()
+            e.target.value = ''
+            if (inputRef.current) {
+              inputRef.current.dataset.previousLength = '0'
+            }
+            setPhase('typing')
+            setIsMessageComplete(false)
+            return
+          }
+          
           // Create a synthetic keydown event for the character
           const syntheticEvent = {
             key: char,
@@ -249,11 +277,6 @@ function App() {
           }
           
           handleKeyPress(syntheticEvent)
-          
-          // If phase changed (skip detected), break out
-          if (phase !== 'reveal') {
-            break
-          }
         }
       }
       
@@ -262,7 +285,7 @@ function App() {
         inputRef.current.dataset.previousLength = currentLength.toString()
       }
       
-      // Clear the input to track next character (only if still in reveal phase)
+      // Clear the input to track next character
       if (phase === 'reveal') {
         e.target.value = ''
         if (inputRef.current) {
@@ -270,10 +293,11 @@ function App() {
         }
       }
     }
-  }, [phase, handleKeyPress, setPhase, setIsMessageComplete])
+  }, [phase, handleKeyPress])
 
   return (
     <div className="app">
+      <div style={{ height: '100px', width: '100%', flexShrink: 0 }} className="top-spacer"></div>
       {phase === 'reveal' && (
         <>
           <div className="app-header">

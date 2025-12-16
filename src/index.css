@@ -18,6 +18,13 @@ html {
   background-attachment: fixed;
   min-height: 100vh;
   height: 100%;
+  padding-top: 100px;
+}
+
+@media (max-width: 768px) {
+  html {
+    padding-top: 80px;
+  }
 }
 
 body {
@@ -34,11 +41,8 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   min-height: 100vh;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
+  padding: 0;
+  margin: 0;
   position: relative;
   overflow-x: hidden;
 }
@@ -77,15 +81,12 @@ body::before {
 #root {
   width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
 
 @media (max-width: 768px) {
-  body {
-    padding: 10px 5px;
-  }
-  
   #root {
     max-width: 100%;
   }

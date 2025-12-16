@@ -56,6 +56,14 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     return lastPressedKey === key.toLowerCase()
   }
 
+  const handleKeyboardAreaClick = (e) => {
+    // On mobile, clicking the keyboard area should focus the input
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+    if (isMobile && inputRef?.current) {
+      e.preventDefault()
+      inputRef.current.focus()
+    }
+  }
 
   return (
     <div className="typewriter-container">
@@ -98,7 +106,7 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
       </div>
 
       {/* Keyboard */}
-      <div className="typewriter-keyboard">
+      <div className="typewriter-keyboard" onClick={handleKeyboardAreaClick}>
         {/* Number Row */}
         <div className="keyboard-row">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((key) => (
