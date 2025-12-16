@@ -23,6 +23,12 @@ function App() {
   const typedSequenceRef = useRef('')
   const startTimeRef = useRef(null)
   const lastKeystrokeTimeRef = useRef(null)
+  const phaseRef = useRef(phase)
+  
+  // Keep phaseRef in sync with phase state
+  useEffect(() => {
+    phaseRef.current = phase
+  }, [phase])
 
   const handleKeyPress = useCallback((event) => {
     // Only handle keypress in reveal phase
@@ -30,24 +36,20 @@ function App() {
       return
     }
 
-    // Check for skip FIRST, before filtering keys
     const key = event.key
     const isBackspace = key === 'Backspace'
     
-    // Only process single character keys or Backspace
-    if (key.length > 1 && !isBackspace) {
-      return
-    }
-
-    // Check for "skip" command BEFORE any other processing
-    if (!isBackspace) {
+    // Check for "skip" command FIRST, before any filtering
+    // Track skip sequence for ALL single character keys (letters, numbers, symbols)
+    if (!isBackspace && key.length === 1) {
       const typedChar = key.toLowerCase()
-      // Track ALL characters (letters, numbers, etc.) for skip sequence
+      // Track ALL characters for skip sequence (keep last 20 to catch skip anywhere)
       typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-20)
       const sequence = typedSequenceRef.current.toLowerCase()
       
-      // Check if sequence ends with "skip" (trigger as soon as "p" completes "skip")
+      // Check if sequence ends with "skip" - trigger immediately when "p" completes it
       if (sequence.endsWith('skip')) {
+        console.log('SKIP DETECTED!', sequence) // Debug log
         // Skip detected - prevent default, stop propagation, and transition
         event.preventDefault()
         event.stopPropagation()
@@ -59,10 +61,16 @@ function App() {
           inputRef.current.dataset.previousLength = '0'
         }
         // Transition immediately
+        phaseRef.current = 'typing'
         setPhase('typing')
         setIsMessageComplete(false)
         return
       }
+    }
+    
+    // Only process single character keys or Backspace for normal typing
+    if (key.length > 1 && !isBackspace) {
+      return
     }
 
     const typedChar = isBackspace ? 'backspace' : key.toLowerCase()
@@ -251,26 +259,8 @@ function App() {
             continue
           }
           
-          // Track skip sequence directly here too
-          const typedChar = char.toLowerCase()
-          typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-20)
-          const sequence = typedSequenceRef.current.toLowerCase()
-          
-          // Check for skip BEFORE calling handleKeyPress
-          if (sequence.endsWith('skip')) {
-            typedSequenceRef.current = ''
-            lastKeystrokeTimeRef.current = Date.now()
-            e.target.value = ''
-            if (inputRef.current) {
-              inputRef.current.dataset.previousLength = '0'
-            }
-            setPhase('typing')
-            setIsMessageComplete(false)
-            return
-          }
-          
           // Create a synthetic keydown event for the character
-          // handleKeyPress will also handle skip detection as backup
+          // handleKeyPress will handle skip detection
           const syntheticEvent = {
             key: char,
             preventDefault: () => {},
@@ -278,6 +268,12 @@ function App() {
           }
           
           handleKeyPress(syntheticEvent)
+          
+          // Check if phase changed (skip detected in handleKeyPress)
+          // Use ref to check current phase since state might not update immediately
+          if (phaseRef.current !== 'reveal') {
+            break
+          }
           
           // If phase changed (skip detected), break out
           if (phase !== 'reveal') {
@@ -319,7 +315,13 @@ function App() {
             autoCapitalize="off"
             spellCheck="false"
             className="hidden-input"
-            onKeyDown={handleKeyPress}
+            onKeyDown={(e) => {
+              // Only handle on mobile - on desktop, let window listener handle it
+              const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+              if (isMobile) {
+                handleKeyPress(e)
+              }
+            }}
             onInput={handleInput}
             placeholder=""
           />

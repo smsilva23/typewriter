@@ -56,45 +56,51 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     return lastPressedKey === key.toLowerCase()
   }
 
+  const keyboardRef = React.useRef(null)
+  
   const handleKeyboardClick = (e) => {
     // Only focus input on mobile devices
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
     if (isMobile && inputRef?.current) {
       e.preventDefault()
       e.stopPropagation()
-      // Force focus and show keyboard - use setTimeout to ensure it works
-      setTimeout(() => {
-        if (inputRef?.current) {
-          inputRef.current.focus()
-          // Try to show keyboard on iOS
-          inputRef.current.setAttribute('readonly', 'readonly')
-          setTimeout(() => {
-            if (inputRef?.current) {
-              inputRef.current.removeAttribute('readonly')
-            }
-          }, 100)
-        }
-      }, 0)
+      // Simple focus - should trigger keyboard
+      inputRef.current.focus()
+      // Add visual feedback
+      if (keyboardRef.current) {
+        keyboardRef.current.classList.add('touching')
+        setTimeout(() => {
+          if (keyboardRef.current) {
+            keyboardRef.current.classList.remove('touching')
+          }
+        }, 150)
+      }
     }
   }
   
-  const handleKeyboardTouch = (e) => {
+  const handleKeyboardTouchStart = (e) => {
     // Handle touch events on mobile
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
     if (isMobile && inputRef?.current) {
       e.preventDefault()
       e.stopPropagation()
-      setTimeout(() => {
-        if (inputRef?.current) {
-          inputRef.current.focus()
-          inputRef.current.setAttribute('readonly', 'readonly')
-          setTimeout(() => {
-            if (inputRef?.current) {
-              inputRef.current.removeAttribute('readonly')
-            }
-          }, 100)
-        }
-      }, 0)
+      // Add visual feedback
+      if (keyboardRef.current) {
+        keyboardRef.current.classList.add('touching')
+      }
+    }
+  }
+  
+  const handleKeyboardTouchEnd = (e) => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+    if (isMobile && inputRef?.current) {
+      e.preventDefault()
+      e.stopPropagation()
+      inputRef.current.focus()
+      // Remove visual feedback
+      if (keyboardRef.current) {
+        keyboardRef.current.classList.remove('touching')
+      }
     }
   }
 
@@ -140,9 +146,11 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
 
       {/* Keyboard */}
       <div 
+        ref={keyboardRef}
         className="typewriter-keyboard" 
         onClick={handleKeyboardClick}
-        onTouchStart={handleKeyboardTouch}
+        onTouchStart={handleKeyboardTouchStart}
+        onTouchEnd={handleKeyboardTouchEnd}
       >
         {/* Number Row */}
         <div className="keyboard-row">

@@ -633,31 +633,51 @@
   transform: rotateX(2deg) translateZ(-15px);
   transform-style: preserve-3d;
   overflow: visible;
+  cursor: default;
+}
+
+/* Desktop hover effect */
+@media (min-width: 769px) {
+  .typewriter-keyboard:hover {
+    cursor: default;
+  }
 }
 
 /* Make keyboard clickable on mobile to trigger keyboard */
 @media (max-width: 768px) {
   .typewriter-keyboard {
-    cursor: pointer !important;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-    pointer-events: auto !important;
-    position: relative !important;
-    z-index: 10 !important;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3);
+    pointer-events: auto;
+    position: relative;
+    z-index: 10;
     touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
   }
   
-  .typewriter-keyboard:active {
-    opacity: 0.95;
-    background: rgba(127, 179, 184, 0.9) !important;
+  .typewriter-keyboard:active,
+  .typewriter-keyboard:focus {
+    opacity: 0.9;
+    transform: scale(0.98);
+    transition: transform 0.1s, opacity 0.1s;
   }
   
   /* Make sure keys don't block the click */
   .typewriter-key {
-    pointer-events: none !important;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
   
   .keyboard-row {
-    pointer-events: none !important;
+    pointer-events: none;
+  }
+  
+  /* Add visual feedback on touch */
+  .typewriter-keyboard.touching {
+    opacity: 0.85;
+    transform: scale(0.99);
   }
 }
 
