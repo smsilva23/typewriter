@@ -8,7 +8,7 @@ const KEYBOARD_LAYOUT = [
   ['z', 'x', 'c', 'v', 'b', 'n', 'm']
 ]
 
-function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMessageComplete, onNext }) {
+function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMessageComplete, onNext, inputRef }) {
   const renderMessage = () => {
     return targetMessage.split('').map((char, index) => {
       const lowerChar = char.toLowerCase()
@@ -56,6 +56,15 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     return lastPressedKey === key.toLowerCase()
   }
 
+  const handleKeyboardClick = (e) => {
+    // Only focus input on mobile devices
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+    if (isMobile && inputRef?.current) {
+      e.preventDefault()
+      inputRef.current.focus()
+    }
+  }
+
   return (
     <div className="typewriter-container">
       {/* Button overlay - outside 3D context */}
@@ -97,7 +106,7 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
       </div>
 
       {/* Keyboard */}
-      <div className="typewriter-keyboard">
+      <div className="typewriter-keyboard" onClick={handleKeyboardClick}>
         {/* Number Row */}
         <div className="keyboard-row">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((key) => (

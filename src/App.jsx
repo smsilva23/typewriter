@@ -30,27 +30,39 @@ function App() {
       return
     }
 
-    // Ignore special keys
-    if (event.key.length > 1 && event.key !== 'Backspace') {
+    // Check for skip FIRST, before filtering keys
+    const key = event.key
+    const isBackspace = key === 'Backspace'
+    
+    // Only process single character keys or Backspace
+    if (key.length > 1 && !isBackspace) {
       return
     }
 
-    const typedChar = event.key.toLowerCase()
-    
     // Check for "skip" command BEFORE any other processing
-    typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-4)
-    const lastFour = typedSequenceRef.current.toLowerCase()
-    
-    if (lastFour === 'skip') {
-      // Skip detected - prevent default, stop propagation, and transition
-      event.preventDefault()
-      event.stopPropagation()
-      setPhase('typing')
-      setIsMessageComplete(false)
-      typedSequenceRef.current = ''
-      lastKeystrokeTimeRef.current = Date.now()
-      return
+    if (!isBackspace) {
+      const typedChar = key.toLowerCase()
+      typedSequenceRef.current = (typedSequenceRef.current + typedChar).slice(-4)
+      const lastFour = typedSequenceRef.current.toLowerCase()
+      
+      if (lastFour === 'skip') {
+        // Skip detected - prevent default, stop propagation, and transition
+        event.preventDefault()
+        event.stopPropagation()
+        setPhase('typing')
+        setIsMessageComplete(false)
+        typedSequenceRef.current = ''
+        lastKeystrokeTimeRef.current = Date.now()
+        // Clear input if it exists
+        if (inputRef.current) {
+          inputRef.current.value = ''
+          inputRef.current.dataset.previousLength = '0'
+        }
+        return
+      }
     }
+
+    const typedChar = isBackspace ? 'backspace' : key.toLowerCase()
 
     if (!isActive) {
       setIsActive(true)
@@ -231,24 +243,13 @@ function App() {
         for (let i = 0; i < newChars.length; i++) {
           const char = newChars[i]
           
-          // Update skip sequence tracking BEFORE creating synthetic event
-          typedSequenceRef.current = (typedSequenceRef.current + char.toLowerCase()).slice(-4)
-          const lastFour = typedSequenceRef.current.toLowerCase()
-          
-          // Check for skip command
-          if (lastFour === 'skip') {
-            setPhase('typing')
-            setIsMessageComplete(false)
-            typedSequenceRef.current = ''
-            lastKeystrokeTimeRef.current = Date.now()
-            e.target.value = ''
-            if (inputRef.current) {
-              inputRef.current.dataset.previousLength = '0'
-            }
-            return
+          // Skip spaces and non-single characters
+          if (char === ' ' || char.length !== 1) {
+            continue
           }
           
           // Create a synthetic keydown event for the character
+          // handleKeyPress will handle skip detection
           const syntheticEvent = {
             key: char,
             preventDefault: () => {},
@@ -303,6 +304,7 @@ function App() {
               lastPressedKey={lastPressedKey}
               isMessageComplete={isMessageComplete}
               onNext={handleNext}
+              inputRef={inputRef}
             />
           </div>
         </>
