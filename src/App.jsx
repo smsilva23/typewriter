@@ -218,10 +218,22 @@ function App() {
       // Only focus on mobile devices
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
       if (isMobile) {
-        // Small delay to ensure the element is rendered
-        setTimeout(() => {
-          inputRef.current?.focus()
-        }, 100)
+        // Try multiple times with delays to ensure focus works
+        const attemptFocus = () => {
+          if (inputRef.current) {
+            inputRef.current.focus()
+            // Try again after a short delay in case first attempt failed
+            setTimeout(() => {
+              if (inputRef.current) {
+                inputRef.current.focus()
+              }
+            }, 200)
+          }
+        }
+        // Initial attempt
+        setTimeout(attemptFocus, 100)
+        // Also try on next tick
+        setTimeout(attemptFocus, 300)
       }
     }
   }, [phase])

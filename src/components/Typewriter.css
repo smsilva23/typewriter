@@ -6,7 +6,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 100px 0 40px 0 !important;
+  padding: 40px 0 40px 0 !important;
   overflow: visible;
   perspective: 1500px;
   transform-style: preserve-3d;
@@ -940,7 +940,7 @@
 @media (max-width: 768px) {
   .typewriter-container {
     max-width: 100%;
-    padding: 80px 10px 30px 10px !important;
+    padding: 20px 10px 30px 10px !important;
     max-height: none;
   }
   

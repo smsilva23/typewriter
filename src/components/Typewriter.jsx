@@ -61,12 +61,27 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
     if (isMobile && inputRef?.current) {
       e.preventDefault()
+      e.stopPropagation()
+      inputRef.current.focus()
+    }
+  }
+
+  const handleTypewriterAreaClick = (e) => {
+    // On mobile, clicking anywhere on the typewriter should focus the input
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+    if (isMobile && inputRef?.current) {
+      // Don't prevent default if clicking the Next button
+      if (e.target.closest('.paper-next-button-overlay')) {
+        return
+      }
+      e.preventDefault()
+      e.stopPropagation()
       inputRef.current.focus()
     }
   }
 
   return (
-    <div className="typewriter-container">
+    <div className="typewriter-container" onClick={handleTypewriterAreaClick} onTouchStart={handleTypewriterAreaClick}>
       {/* Button overlay - outside 3D context */}
       {isMessageComplete && (
         <button onClick={onNext} className="paper-next-button-overlay">
@@ -106,7 +121,7 @@ function Typewriter({ targetMessage, revealedChars, typos, lastPressedKey, isMes
       </div>
 
       {/* Keyboard */}
-      <div className="typewriter-keyboard" onClick={handleKeyboardAreaClick}>
+      <div className="typewriter-keyboard" onClick={handleKeyboardAreaClick} onTouchStart={handleKeyboardAreaClick}>
         {/* Number Row */}
         <div className="keyboard-row">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((key) => (

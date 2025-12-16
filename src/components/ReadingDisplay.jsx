@@ -8,6 +8,7 @@ function ReadingDisplay({ readingData, onReset }) {
 
   return (
     <div className="reading-container">
+      <div style={{ height: '120px', width: '100%', flexShrink: 0 }} className="top-spacer"></div>
       <div className="reading-card">
         <div className="archetype-header">
           <div className="archetype-symbol">{archetype.symbol}</div>

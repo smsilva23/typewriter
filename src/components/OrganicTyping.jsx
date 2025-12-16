@@ -240,6 +240,7 @@ function OrganicTyping({ onComplete, onMetricsUpdate }) {
 
   return (
     <div className={`organic-typing-container ${phase === 'scripted' ? 'scripted-phase' : ''}`}>
+      <div style={{ height: '120px', width: '100%', flexShrink: 0 }} className="top-spacer"></div>
       <div className="typing-prompt">
         {phase === 'scripted' ? (
           <h2 className="scripted-title">Type this sentence exactly as shown:</h2>
